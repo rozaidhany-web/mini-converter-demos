@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Topsoil Calculator</title>
+<style>
+body { font-family: Georgia, serif; max-width: 640px; margin: 40px auto; padding: 0 16px; line-height: 1.6; color: #222; }
+h1 { font-size: 1.6rem; }
+label { display: block; margin: 14px 0 4px; }
+input { font-size: 1rem; padding: 8px; width: 100%; box-sizing: border-box; }
+button { margin-top: 16px; padding: 10px 18px; font-size: 1rem; cursor: pointer; }
+#result { margin-top: 18px; font-size: 1.15rem; }
+.note { color: #555; font-size: 0.95rem; }
+</style>
+</head>
+<body>
+<h1>Mini topsoil calculator</h1>
+<p>Measure the bed in feet, and the depth in inches. The calculator works out cubic feet and cubic yards.</p>
+
+<label for="length">Length (feet)</label>
+<input id="length" type="number" value="8" min="0" step="0.5">
+
+<label for="width">Width (feet)</label>
+<input id="width" type="number" value="4" min="0" step="0.5">
+
+<label for="depth">Depth (inches)</label>
+<input id="depth" type="number" value="6" min="0" step="0.5">
+
+<button onclick="calc()">Calculate</button>
+<p id="result"></p>
+<p class="note">Cubic yards equals length times width times depth in inches, divided by 324. A 4 by 8 foot bed at 6 inches deep needs about 0.59 cubic yards, so order 1 cubic yard. Order about a tenth extra, since soil settles. Measure depth in five or six places and use the average. Full calculator with measuring steps: <a href="https://topsoilcalconline.com/">topsoilcalconline.com</a>.</p>
+
+<script>
+function calc() {
+  const l = Number(document.getElementById('length').value);
+  const w = Number(document.getElementById('width').value);
+  const d = Number(document.getElementById('depth').value);
+  const cubicFeet = l * w * d / 12;
+  const cubicYards = (l * w * d) / 324;
+  document.getElementById('result').textContent =
+    'You need about ' + cubicFeet.toFixed(1) + ' cubic feet (' + cubicYards.toFixed(2) +
+    ' cubic yards). With a tenth extra for settling, order about ' + (cubicYards * 1.1).toFixed(2) + ' cubic yards.';
+}
+</script>
+</body>
+</html>

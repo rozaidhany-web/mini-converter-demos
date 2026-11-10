@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Gauge to MM Converter</title>
+<style>
+body { font-family: Georgia, serif; max-width: 640px; margin: 40px auto; padding: 0 16px; line-height: 1.6; color: #222; }
+h1 { font-size: 1.6rem; }
+label { display: block; margin: 14px 0 4px; }
+select, input { font-size: 1rem; padding: 8px; width: 100%; box-sizing: border-box; }
+button { margin-top: 16px; padding: 10px 18px; font-size: 1rem; cursor: pointer; }
+#result { margin-top: 18px; font-size: 1.15rem; }
+.note { color: #555; font-size: 0.95rem; }
+</style>
+</head>
+<body>
+<h1>Mini gauge to mm converter</h1>
+<p>A gauge number means nothing until you know the system. Pick the system, pick the metal where it matters, and enter the gauge number.</p>
+
+<label for="system">System</label>
+<select id="system">
+  <option value="sheet">Sheet metal (Manufacturers Standard Gauge)</option>
+  <option value="wire">Wire (American Wire Gauge)</option>
+  <option value="needle">Needle (medical standard)</option>
+</select>
+
+<label for="metal">Metal (sheet metal only)</label>
+<select id="metal">
+  <option value="mildSteel">Mild steel</option>
+  <option value="copper">Copper</option>
+  <option value="brass">Brass</option>
+</select>
+
+<label for="gauge">Gauge number</label>
+<input id="gauge" type="number" value="18" min="1" max="40">
+
+<button onclick="convert()">Convert</button>
+<p id="result"></p>
+<p class="note">Higher gauge means thinner material in all three systems. Values are standard table values. Measure with calipers when the job depends on it. Full tables: <a href="https://gaugetomillimeters.com/">gaugetomillimeters.com</a>, including the <a href="https://gaugetomillimeters.com/sheet-metal-gauge-chart-guide/">sheet metal gauge chart guide</a>.</p>
+
+<script>
+const sheetMm = {
+  mildSteel: { 16: 1.5, 18: 1.2, 20: 0.9 },
+  copper: { 16: 1.651 },
+  brass: { 16: 1.291 }
+};
+const needleMm = { 18: 1.27, 21: 0.82, 22: 0.72 };
+function awgToMm(awg) {
+  return 0.127 * Math.pow(92, (36 - awg) / 39);
+}
+function convert() {
+  const system = document.getElementById('system').value;
+  const metal = document.getElementById('metal').value;
+  const gauge = Number(document.getElementById('gauge').value);
+  const out = document.getElementById('result');
+  if (system === 'wire') {
+    out.textContent = gauge + ' AWG is about ' + awgToMm(gauge).toFixed(2) + ' mm across.';
+  } else if (system === 'needle') {
+    const v = needleMm[gauge];
+    out.textContent = v ? gauge + ' gauge needle is about ' + v + ' mm across.'
+      : 'That needle size is not in this small table. Try 18, 21, or 22 gauge.';
+  } else {
+    const v = sheetMm[metal][gauge];
+    out.textContent = v ? gauge + ' gauge ' + metal + ' sheet is about ' + v + ' mm thick.'
+      : 'That size is not in this small table for ' + metal + '. Try 16, 18, or 20 gauge for mild steel.';
+  }
+}
+</script>
+</body>
+</html>
